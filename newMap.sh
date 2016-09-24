@@ -2,38 +2,42 @@
 
 set -euo pipefail
 
-if [ -w factorissimoSave ]; then
-	latest=""
-	for file in factorissimoSave/*.zip; do
-	  [[ $file -nt $latest ]] && latest=$file
-	done
+if [ ! -w mapsettings.json ]; then
+cat > mapsettings.json <<- EOM
+{
+  "_comment": "Sizes can be specified as none, very-low, low, normal, high, very-high",
 
+  "terrain_segmentation": "normal",
+  "water": "normal",
+  "width": 0,
+  "height": 0,
+  "starting_area": "high",
+  "peaceful_mode": false,
+  "autoplace_controls":
+  {
+    "coal": {"frequency": "very-low", "size": "high", "richness": "very-high"},
+    "copper-ore": {"frequency": "very-low", "size": "high", "richness": "very-high"},
+    "crude-oil": {"frequency": "very-low", "size": "high", "richness": "very-high"},
+    "enemy-base": {"frequency": "low", "size": "very-high", "richness": "very-high"},
+    "iron-ore": {"frequency": "very-low", "size": "high", "richness": "very-high"},
+    "stone": {"frequency": "very-low", "size": "high", "richness": "very-high"}
+  }
+}
+EOM
 fi
-if [ "$#" -ne 1 ]; then
-	if [ -z $latest ]; then	
-        echo -e "./runFactorio.sh <ZipFileSave> \n or make sure that factorissimoSave/ is populated"
-        exit 1
-    else
-    	save=$latest
-    fi  
-else
-	save=$1
 
+mkdir -p /opt/modpackFactorissimo/saves
+
+
+
+if [ -d factorissimoSave -a ! -h factorissimoSave ]; then
+  echo "... migrating save directory";
+  mv factorissimoSave/* /opt/modpackFactorissimo/saves/
+  rm -rf factorissimoSave/
 fi
 
-
-if [ "$(file -ib $save)" != "application/zip; charset=binary" ]; then
-        echo "$save is not a valid zip file."
-        exit 1
+if [ ! -w factorissimoSave ]; then 
+  echo "... making symbolic link" 
+  ln -s /opt/modpackFactorissimo/saves factorissimoSave 
 fi
-
-echo "*********** Your game password is in the quotes *********"
-grep "game_password" /opt/modpackFactorissimo/config/settings.json
-echo "*********************************************************"
-
-numthreads=$(grep -P "processor\t" /proc/cpuinfo | wc -l)
-sed -i -e 's/max_threads=.*/max_threads='"$numthreads/" /opt/modpackFactorissimo/config/config.ini
-
-/opt/modpackFacrorissimo/bin/x64/factorio --config /opt/modpackFacrorissimo/config/config.ini --start-server $save \
-                 --autosave-interval 10 --afk-autokick-interval 5 --allow-commands restrict \
-                 --server-settings /opt/modpackFacrorissimo/config/settings.json 
+/opt/modpackFactorissimo/bin/x64/factorio --create /opt/modpackFactorissimo/saves/$(date +%Y%m%d) --map-gen-settings mapsettings.json
