@@ -28,7 +28,7 @@ if [ "$(file -ib $save)" != "application/zip; charset=binary" ]; then
 fi
 
 echo "*********** Your game password is in the quotes *********"
-grep "game_password" /opt/modpackFacrorissimo/config/settings.json
+grep "game_password" /opt/modpackFactorissimo/config/settings.json
 echo "*********************************************************"
 
 numthreads=$(grep -P "processor\t" /proc/cpuinfo | wc -l)
