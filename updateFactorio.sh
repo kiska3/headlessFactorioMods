@@ -11,13 +11,13 @@ wget https://www.factorio.com/get-download/latest/headless/linux64 -O /tmp/lates
 cd /opt
 
 echo "... unpacking"
-tar -xzf /tmp/latestFactorio.tar.gz -C modpackFacrorissimo
+tar -xzf /tmp/latestFactorio.tar.gz -C modpackFactorissimo
 
 
-if [ ! -w /opt/modpackFacrorissimo/config/settings.json ]; then
+if [ ! -w /opt/modpackFactorissimo/config/settings.json ]; then
         echo "... creating default settings.json"
-        mkdir -p /opt/modpackFacrorissimo/config
-        cp -n /opt/modpackFacrorissimo/data/server-settings.example.json /opt/modpackFacrorissimo/config/settings.json
+        mkdir -p /opt/modpackFactorissimo/config
+        cp -n /opt/modpackFactorissimo/data/server-settings.example.json /opt/modpackFactorissimo/config/settings.json
 fi
 
 numthreads=$(grep -P "processor\t" /proc/cpuinfo | wc -l)
