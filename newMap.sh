@@ -32,7 +32,7 @@ grep "game_password" /opt/modpackFactorissimo/config/settings.json
 echo "*********************************************************"
 
 numthreads=$(grep -P "processor\t" /proc/cpuinfo | wc -l)
-sed -i -e 's/max_threads=.*/max_threads='"$numthreads/" /opt/modpackFacrorissimo/config/config.ini
+sed -i -e 's/max_threads=.*/max_threads='"$numthreads/" /opt/modpackFactorissimo/config/config.ini
 
 /opt/modpackFacrorissimo/bin/x64/factorio --config /opt/modpackFacrorissimo/config/config.ini --start-server $save \
                  --autosave-interval 10 --afk-autokick-interval 5 --allow-commands restrict \
